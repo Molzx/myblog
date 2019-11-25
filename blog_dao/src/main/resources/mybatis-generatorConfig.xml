@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--驱动包的路径-->
+    <!--<classPathEntry location="F:\Program Files\J2EE\Maven\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar" />-->
+
+    <!--数据库连接-->
+    <context id="BlogTables" targetRuntime="MyBatis3">
+        <!-- 生成的Java文件的编码 -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 格式化java代码 -->
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+
+        <!-- 格式化XML代码 -->
+        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+
+        <!-- 公共设置 -->
+        <!-- 带上序列化接口 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+
+        <!-- 整合lombok -->
+        <plugin type="com.xzh.blog.utils.plugins.MyLombokPlugin">
+            <property name="hasLombok" value="true" />
+        </plugin>
+        <!-- 此处是将Example改名为Criteria 当然 想改成什么都行~    -->
+        <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example$" />
+            <!-- 替换后
+            <property name="replaceString" value="Criteria" />
+             -->
+            <property name="replaceString" value="Query" />
+        </plugin>
+        <!-- 此处是将UserMapper.xml改名为UserDao.xml 当然 想改成什么都行~ -->
+        <plugin type="com.xzh.blog.utils.plugins.rename.RenameSqlMapperPlugin">
+            <property name="searchString" value="Mapper" />
+            <property name="replaceString" value="Dao" />
+        </plugin>
+
+        <!-- 此处是将UserMapper改名为UserDao 接口 当然 想改成什么都行~  -->
+        <plugin type="com.xzh.blog.utils.plugins.rename.RenameJavaMapperPlugin">
+            <property name="searchString" value="Mapper$" />
+            <property name="replaceString" value="Dao" />
+        </plugin>
+
+        <!-- optional，type指定自定义注释处理器，对注释进行控制 -->
+        <commentGenerator type="com.xzh.blog.utils.plugins.comment.MyCommentGenerator">
+            <!-- 是否取消自动生成时的注释 -->
+            <!--<property name="suppressAllComments" value="true"/>-->
+            <!-- 是否取消在注释中加上时间 -->
+            <!--<property name="suppressDate" value="true"/>-->
+        </commentGenerator>
+        <!--数据库连接地址及账号密码-->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3307/xzh_blog?serverTimezone=GMT%2B8"
+                        userId="root"
+                        password="root">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+            <!-- useJSR310Types：指定 MyBatis Generator 是否应强制在 DATE，TIME 和 TIMESTAMP 字段中使用 JSR-310 数据类型，而不是使用 java.util.Date
+                    true：则类型将按如下方式解析：
+                        DATE    java.time.LocalDate
+                        TIME    java.time.LocalTime
+                        TIMESTAMP    java.time.LocalDateTime
+                注意：类型解析器将始终解析以下JSR-310类型，无论此属性的值如何：
+                    TIME_WITH_TIMEZONE    java.time.OffsetTime
+                    TIMESTAMP_WITH_TIMEZONE    java.time.OffsetDateTime -->
+            <property name="useJSR310Types" value="true"/>
+        </javaTypeResolver>
+
+        <!-- 关于生成实体类的设置 -->
+        <!-- targetPackage 生成代码的目标目录 -->
+        <!-- targetProject 目录所属位置 -->
+        <javaModelGenerator targetPackage="com.xzh.blog.entity"
+                            targetProject="blog_entity/src/main/java">
+            <!--是否对model添加构造函数-->
+            <!--是否生成一个包含所有字段的构造器-->
+            <property name="constructorBased" value="false"/>
+            <!--是否允许子包-->
+            <!--在targetPackge的基础上根据schema再生成一层package 默认flase-->
+            <property name="enableSubPackages" value="true"/>
+            <!--是否创建一个不可变类-->
+            <!--建立的model对象是否不可变，也就是生成的model没有setter方法-->
+            <property name="immutable" value="false"/>
+            <!-- 是否在get方法中 对String类型的字段做空的判断 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--生成映射文件存放位置-->
+        <sqlMapGenerator targetPackage="com.xzh.blog.dao"
+                         targetProject="blog_dao/src/main/resources">
+            <!--是否允许子包-->
+            <!--在targetPackge的基础上根据schema再生成一层package 默认flase-->
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!--生成Dao类的存放位置-->
+        <!-- 客户端代码,生成易于使用的正对Model对象和XML配置文件的代码
+        type="ANNOTATEDMAPPER", 生成Java Model和基于注解的Mapper对象
+        type="MIXEDMAPPER", 生成基于注解的Java Model和相应的Mapper对象
+        type="XMLMAPPER", 生成SQLMap XML文件和独立的Mapper接口
+        -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.xzh.blog.dao"
+                             targetProject="blog_dao/src/main/java">
+            <!--是否允许子包-->
+            <!--在targetPackge的基础上根据schema再生成一层package 默认flase-->
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!--请根据自己数据库对应的表名进行配置修改，这里仅供参考-->
+        <!--生成对应表及类名-->
+        <table schema="mybatis" tableName="tb_sys_user" domainObjectName="User"
+               enableInsert="true" enableSelectByExample="true"
+               enableDeleteByPrimaryKey="true" enableDeleteByExample="true"
+               enableCountByExample="true" enableUpdateByExample="true"
+               enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true">
+            <domainObjectRenamingRule searchString="^Tb" replaceString="" />
+        </table>
+        <!--<table tableName="item" domainObjectName="Item" enableCountByExample="false"-->
+        <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
+        <!--enableSelectByExample="false" selectByExampleQueryId="false"-->
+        <!--enableInsert="true" enableDeleteByPrimaryKey="false"></table>-->
+        <!--<table tableName="item_stock" domainObjectName="ItemStock" enableCountByExample="false"-->
+        <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
+        <!--enableSelectByExample="false" selectByExampleQueryId="false"-->
+        <!--enableInsert="true" enableDeleteByPrimaryKey="false"></table>-->
+        <!--<table tableName="order_info" domainObjectName="OrderInfo" enableCountByExample="false"-->
+        <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
+        <!--enableSelectByExample="false" selectByExampleQueryId="false"-->
+        <!--enableInsert="true" enableDeleteByPrimaryKey="false"></table>-->
+    </context>
+
+</generatorConfiguration>
